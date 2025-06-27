@@ -1,94 +1,71 @@
--- DML_operations.sql
--- Name: [N.Lahari]
--- Date: 2025-06-25
+#  Data Insertion and Handling Nulls
 
--- ====================================================================
--- Data Insertion and Handling Nulls
--- This script demonstrates creating a database and table,
--- and then using DML commands (INSERT, UPDATE, DELETE)
--- to manipulate data, including handling NULL values.
--- ====================================================================
+## Objective
 
+This repository contains the SQL script for **Task 2: Data Insertion and Handling Nulls**. The primary objective of this task is to practice Data Manipulation Language (DML) operations in SQL, specifically `INSERT`, `UPDATE`, and `DELETE` statements, with a strong focus on how to correctly handle `NULL` values.
 
--- 1. DATABASE AND TABLE SETUP
--- Drop the database if it exists to ensure a clean start
-DROP DATABASE IF EXISTS company_hr_db;
+## Contents
 
--- Create a new database for the HR system
-CREATE DATABASE company_hr_db;
+This repository includes:
 
--- Use the newly created database
-USE company_hr_db;
+* `task2_dml_operations.sql`: The main SQL script containing all the DML statements. This file demonstrates:
+    * Database and table creation (`CREATE DATABASE`, `CREATE TABLE`).
+    * Inserting new records, including complete rows, partial rows, and explicit/implicit `NULL` handling.
+    * Updating existing records, including single and multiple rows, and setting values to `NULL`.
+    * Deleting records, including single and multiple rows.
+    * Verification of data changes using `SELECT` statements after each major operation.
+    * Demonstration of `FOREIGN KEY` with `ON DELETE SET NULL` for managing relationships upon deletion.
 
--- Drop the table if it exists to ensure a clean start
-DROP TABLE IF EXISTS Employees;
+## How to Run the SQL Script
 
--- Create the Employees table
--- This table will store employee information, including self-referencing manager data.
-CREATE TABLE Employees (
-    employee_id INTEGER PRIMARY KEY,
-    first_name VARCHAR(255) NOT NULL,
-    last_name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE, -- Ensures each employee has a unique email
-    phone_number VARCHAR(20),  -- Phone number can be optional (allows NULL)
-    hire_date DATE NOT NULL,
-    job_id INTEGER,
-    salary DECIMAL(10, 2),     -- DECIMAL is best for currency
-    manager_id INTEGER,
-    -- Define a foreign key for manager_id.
-    -- ON DELETE SET NULL: If a manager is deleted, their subordinates are kept
-    -- but their manager_id is set to NULL.
-    FOREIGN KEY (manager_id) REFERENCES Employees(employee_id) ON DELETE SET NULL
-);
+To execute this SQL script and see the operations in action, follow these steps:
 
+1.  **Prerequisites:** You need a MySQL database server installed and running, along with a MySQL client (e.g., MySQL Command Line Client, MySQL Workbench, or DBeaver).
 
--- 2. DATA INSERTION (INSERT STATEMENTS)
--- Demonstrates inserting complete rows, partial rows, and handling NULLs.
+2.  **Download the Script:** Clone this repository or download the `task2_dml_operations.sql` file directly.
 
-INSERT INTO Employees (employee_id, first_name, last_name, email, phone_number, hire_date, job_id, salary, manager_id) VALUES
-(100, 'Alice', 'Manager', 'alice.manager@example.com', '111-222-3333', '2020-01-01', 10, 90000.00, NULL),
-(101, 'John', 'Doe', 'john.doe@example.com', '123-456-7890', '2023-01-15', 1, 60000.00, 100),
-(102, 'Jane', 'Smith', 'jane.smith@example.com', NULL, '2022-05-20', 2, 75000.00, 100),
-(103, 'Peter', 'Jones', 'peter.jones@example.com', NULL, '2024-03-10', 1, 55000.00, 101),
-(104, 'Alice', 'Williams', NULL, NULL, '2023-11-01', 3, NULL, NULL),
-(105, 'Robert', 'Brown', 'robert.brown@example.com', '987-654-3210', '2023-08-01', 2, 70000.00, 102);
+3.  **Connect to MySQL:**
+    * **Via Command Line:**
+        ```bash
+        mysql -u your_username -p
+        ```
+        (Enter your password when prompted.)
+    * **Via MySQL Workbench/Other GUI Client:** Connect to your MySQL server using the appropriate connection details.
 
--- Verify initial data insertion
-SELECT * FROM Employees;
+4.  **Execute the Script:**
+    * **Via Command Line:** Once connected, you can source the SQL file:
+        ```sql
+        SOURCE /path/to/your/task2_dml_operations.sql;
+        ```
+        (Replace `/path/to/your/` with the actual path to where you saved the file.)
+    * **Via MySQL Workbench/Other GUI Client:** Open the `task2_dml_operations.sql` file in a query tab and click the "Execute" or "Run" button (often a lightning bolt icon).
 
+The script is designed to be run from start to finish. It will first drop the database and table if they exist to ensure a clean slate, then recreate them, insert data, perform updates, and finally deletions. `SELECT` statements are included to show the data at various stages.
 
--- 3. DATA UPDATING (UPDATE STATEMENTS)
--- Demonstrates updating single and multiple rows.
+## Key Concepts Demonstrated
 
--- Update a single row: Increase John Doe's salary
-UPDATE Employees
-SET salary = 65000.00
-WHERE employee_id = 101;
+* **DML (Data Manipulation Language):**
+    * `INSERT INTO`: Adding new rows to a table.
+    * `UPDATE`: Modifying existing data in rows.
+    * `DELETE FROM`: Removing rows from a table.
+* **NULL Handling:**
+    * Understanding `NULL` as the absence of a value (distinct from `0` or an empty string).
+    * Explicitly inserting `NULL`.
+    * Omitting columns in `INSERT` to allow `NULL` or `DEFAULT` values.
+    * Updating columns to `NULL`.
+    * Using `IS NULL` and `IS NOT NULL` in `WHERE` clauses.
+* **Constraints:**
+    * `PRIMARY KEY`: Uniquely identifies each row.
+    * `NOT NULL`: Ensures a column cannot contain `NULL` values.
+    * `UNIQUE`: Ensures all values in a column are distinct.
+    * `FOREIGN KEY`: Enforces referential integrity between tables (or self-referencing in this case).
+    * `ON DELETE SET NULL`: A referential action that sets foreign key values to `NULL` when the referenced parent row is deleted.
+* **Best Practices:** Use of appropriate data types (e.g., `VARCHAR` for strings, `DECIMAL` for monetary values).
 
--- Update multiple rows: Give a 5% raise to all employees hired before 2023
-UPDATE Employees
-SET salary = salary * 1.05
-WHERE hire_date < '2023-01-01';
-
--- Update multiple columns: Fill in missing data for Alice Williams
-UPDATE Employees
-SET job_id = 4, manager_id = 100, email = 'alice.williams@example.com'
-WHERE employee_id = 104;
-
--- Verify data after updates
-SELECT * FROM Employees;
+---
+## Screenshots
+![insert](https://github.com/user-attachments/assets/d6d4a705-23a1-4e41-bfc5-1d8450ee447b)
+![update](https://github.com/user-attachments/assets/0b6d54de-4add-48c3-b10a-f133d5ab8d4b)
+![delete](https://github.com/user-attachments/assets/0021fdec-5b73-43bc-8f99-34e2c31334c0)
 
 
--- 4. DATA DELETION (DELETE STATEMENTS)
--- Demonstrates deleting single and multiple rows.
-
--- Delete a single row
-DELETE FROM Employees
-WHERE employee_id = 104;
-
--- Delete multiple rows
-DELETE FROM Employees
-WHERE job_id = 1;
-
--- Verify final state of the data
-SELECT * FROM Employees;
