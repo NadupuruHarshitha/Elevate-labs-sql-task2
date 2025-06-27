@@ -1,6 +1,3 @@
--- DML_operations.sql
--- Name: [N.Lahari]
--- Date: 2025-06-25
 
 -- ====================================================================
 -- Data Insertion and Handling Nulls
